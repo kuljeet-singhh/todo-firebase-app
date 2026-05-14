@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+// @ts-ignore: CSS imports may lack type declarations in this project setup
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import Header from "@/components/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +27,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+        {/* 👇 Paste your GA tag here */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-6DMFYQ2ZSV"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-6DMFYQ2ZSV');
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Toaster position="top-right" />
+        <Header/>
         {children}
       </body>
     </html>
