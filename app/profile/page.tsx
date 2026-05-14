@@ -1,12 +1,12 @@
 "use client";
 
 import { auth } from "@/firebase/config";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
 

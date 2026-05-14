@@ -2,16 +2,16 @@
 
 import { auth } from "@/firebase/config";
 import { addTask, deleteTask, getTasks } from "@/server/task";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import toast from "react-hot-toast";
 
 export default function Home() {
 
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [user,setUser]=useState()
+  const [tasks, setTasks] = useState<{ id: string; title: string }[]>([]);
+  const [user, setUser] = useState<User | null>(null);
    const router = useRouter();
  useEffect(() => {
 
@@ -32,7 +32,7 @@ export default function Home() {
     return () => unsubscribe();
 
   }, []);
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTask(e.target.value);
   };
 

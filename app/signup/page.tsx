@@ -7,6 +7,12 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
+type SignupFormValues = {
+  username: string;
+  email: string;
+  password: string;
+};
+
 export default function Signup() {
   const router = useRouter();
   const formik = useFormik({
@@ -30,47 +36,41 @@ export default function Signup() {
         .required("Password is required"),
     }),
 
-    onSubmit: async (values) => {
+    onSubmit: async (values: SignupFormValues) => {
       handleSignup(values);
     },
   });
 
-const handleSignup = async (values) => {
+  const handleSignup = async (values: SignupFormValues) => {
+    try {
+      const res = await signupUser(
+        values.email,
+        values.password,
+        values.username
+      );
 
-  try {
+      console.log(res, "reeess");
 
-    const res = await signupUser(
-      values.email,
-      values.password,
-      values.username
-    );
+      toast.success("Signup successful");
+      formik.resetForm();
+      router.push("/");
+    } catch (error: unknown) {
+      const errorCode =
+        error && typeof error === "object" && "code" in error
+          ? String((error as { code?: string }).code)
+          : undefined;
 
-    console.log(res, "reeess");
-
-    toast.success("Signup successful");
-  formik.resetForm()
-    router.push("/");
-
-  } catch (error) {
-
-    const errorCode = error.code;
-
-    if (errorCode === "auth/email-already-in-use") {
-      toast.error("Email already exists");
+      if (errorCode === "auth/email-already-in-use") {
+        toast.error("Email already exists");
+      } else if (errorCode === "auth/invalid-email") {
+        toast.error("Invalid email");
+      } else if (errorCode === "auth/weak-password") {
+        toast.error("Password should be at least 6 characters");
+      } else {
+        toast.error("Something went wrong");
+      }
     }
-    else if (errorCode === "auth/invalid-email") {
-      toast.error("Invalid email");
-    }
-    else if (errorCode === "auth/weak-password") {
-      toast.error("Password should be at least 6 characters");
-    }
-    else {
-      toast.error("Something went wrong");
-    }
-
-  }
-
-};
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

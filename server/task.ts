@@ -17,7 +17,7 @@ export const addTask = async (title: string) => {
 };
 
 
-export const getTasks = async () => {
+export const getTasks = async (): Promise<{ id: string; title: string }[]> => {
 
   const user = auth.currentUser;
 
@@ -30,13 +30,16 @@ export const getTasks = async () => {
 
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  return snapshot.docs.map((docSnap) => {
+    const data = docSnap.data();
+    return {
+      id: docSnap.id,
+      title: typeof data.title === "string" ? data.title : "",
+    };
+  });
 };
 
-export const deleteTask = async (id) => {
+export const deleteTask = async (id: string) => {
 
   await deleteDoc(doc(db,"tasks",id));
 

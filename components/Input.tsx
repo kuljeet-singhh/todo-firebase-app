@@ -1,3 +1,16 @@
+import type { ChangeEventHandler } from "react";
+
+type InputProps = {
+  label: string;
+  type: string;
+  name: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  value: string;
+  placeholder: string;
+  error?: string;
+  touched?: boolean;
+};
+
 export default function Input({
   label,
   type,
@@ -6,8 +19,8 @@ export default function Input({
   value,
   placeholder,
   error,
-  touched
-}) {
+  touched,
+}: InputProps) {
   return (
     <div className="flex flex-col gap-1 mb-4">
 

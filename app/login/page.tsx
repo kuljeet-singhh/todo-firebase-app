@@ -25,7 +25,7 @@ export default function Login() {
         .required("Password is required"),
     }),
 
-    onSubmit: (values) => {
+    onSubmit: (values: { email: string; password: string }) => {
       // loginUser(values.email, values.password);
     
       // console.log(values);
@@ -34,41 +34,32 @@ export default function Login() {
     },
   });
 
-  const handleLogin = async (values) => {
+  const handleLogin = async (values: { email: string; password: string }) => {
+    try {
+      const res = await loginUser(values.email, values.password);
 
-  try {
+      console.log(res, "login user");
 
-    const res = await loginUser(
-      values.email,
-      values.password
-    );
+      toast.success("Login successful");
+      console.log("display name from login", res.displayName);
+      router.push("/");
+    } catch (error: unknown) {
+      const errorCode =
+        error && typeof error === "object" && "code" in error
+          ? String((error as { code?: string }).code)
+          : undefined;
 
-    console.log(res, "login user");
-
-    toast.success("Login successful");
-console.log("display name from login",res.displayName);
-    router.push("/");
-
-  } catch (error) {
-
-    const errorCode = error.code;
-
-    if (errorCode === "auth/invalid-credential") {
-      toast.error("Invalid email or password");
+      if (errorCode === "auth/invalid-credential") {
+        toast.error("Invalid email or password");
+      } else if (errorCode === "auth/user-not-found") {
+        toast.error("User not found");
+      } else if (errorCode === "auth/wrong-password") {
+        toast.error("Wrong password");
+      } else {
+        toast.error("Login failed");
+      }
     }
-    else if (errorCode === "auth/user-not-found") {
-      toast.error("User not found");
-    }
-    else if (errorCode === "auth/wrong-password") {
-      toast.error("Wrong password");
-    }
-    else {
-      toast.error("Login failed");
-    }
-
-  }
-
-};
+  };
 
   return (
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { addTast, getTasks, deleteTask } from "@/server/task";
+import { addTask, getTasks, deleteTask } from "@/server/task";
 import { useState, useEffect, ChangeEvent } from "react";
 
 interface Task {
@@ -29,7 +29,7 @@ export default function Dashboard() {
   const handleAdd = async () => {
     if (!task.trim()) return;
 
-    await addTast(task);
+    await addTask(task);
     setTask("");
     loadTasks();
   };
